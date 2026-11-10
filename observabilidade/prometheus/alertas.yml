@@ -1,0 +1,40 @@
+# Regras de alerta sobre as 4 métricas de ouro. Ver em http://localhost:9090/alerts
+# e no painel "Alertas disparando" do Grafana.
+
+groups:
+  - name: passo-firme-api
+    rules:
+      - alert: APIForaDoAr
+        expr: up{job=~"api-.*"} == 0
+        for: 1m
+        labels:
+          severidade: critica
+        annotations:
+          resumo: "API {{ $labels.job }} sem responder ao Prometheus há 1 minuto"
+
+      - alert: APIErros5xx
+        expr: |
+          sum by (job) (rate(http_requests_total{status=~"5.."}[2m]))
+            / sum by (job) (rate(http_requests_total[2m])) > 0.05
+        for: 1m
+        labels:
+          severidade: critica
+        annotations:
+          resumo: "Mais de 5% das requisições da {{ $labels.job }} com erro 5xx"
+
+      - alert: APILatenciaAlta
+        expr: |
+          histogram_quantile(0.95, sum by (job, le) (rate(http_request_duration_seconds_bucket[5m]))) > 1
+        for: 2m
+        labels:
+          severidade: alerta
+        annotations:
+          resumo: "p95 da latência da {{ $labels.job }} acima de 1 s"
+
+      - alert: APISaturacaoMemoria
+        expr: process_resident_memory_bytes{job=~"api-.*"} > 800 * 1024 * 1024
+        for: 5m
+        labels:
+          severidade: alerta
+        annotations:
+          resumo: "API {{ $labels.job }} usando mais de 800 MiB (limite do container: 1 GiB)"

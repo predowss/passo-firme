@@ -1,0 +1,39 @@
+# --- Segredos e configuração local (nunca versionar) ---
+.env
+.env.*
+!.env.example
+observabilidade/segredos/*
+!observabilidade/segredos/.gitkeep
+observabilidade/alvos/*.json
+
+# --- Terraform: state e variáveis ficam fora do repositório ---
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+backend.hcl
+crash.log
+crash.*.log
+*.tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# O .terraform.lock.hcl DEVE ser versionado (fixa as versões dos providers).
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.db
+
+# --- Diversos ---
+.DS_Store
+.idea/
+.vscode/
+imagem.tar.gz
+*.sarif

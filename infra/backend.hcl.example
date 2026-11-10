@@ -1,0 +1,7 @@
+# Gerado automaticamente por scripts/01-bootstrap-azure.sh como infra/backend.hcl.
+# Fica fora do Git. Uso: terraform init -backend-config=backend.hcl
+resource_group_name  = "rg-passofirme-tfstate"
+storage_account_name = "stpftfstateXXXXX"
+container_name       = "tfstate"
+key                  = "passo-firme.tfstate"
+use_azuread_auth     = true

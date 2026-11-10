@@ -1,0 +1,12 @@
+# Só o código da API entra no contexto do build.
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+tests/
+requirements-dev.txt
+pytest.ini
+*.db
+.env
+.env.*
+Dockerfile
+.dockerignore

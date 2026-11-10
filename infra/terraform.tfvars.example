@@ -1,0 +1,18 @@
+# Copie para terraform.tfvars (que está no .gitignore) e preencha.
+# cp terraform.tfvars.example terraform.tfvars
+
+subscription_id    = "00000000-0000-0000-0000-000000000000"
+location           = "eastus2"
+github_repositorio = "sua-organizacao/passo-firme"
+
+# Quem recebe os alertas por e-mail (dado pessoal: por isso este arquivo não vai para o Git).
+emails_alerta = ["integrante@exemplo.com"]
+
+# Durante a correção (20/11 a 26/11), troque para 1 e rode terraform apply.
+api_min_replicas = 0
+
+# URL do app web, quando existir.
+cors_origins = ""
+
+# Orçamento opcional em USD (0 = desligado).
+orcamento_mensal_usd = 0

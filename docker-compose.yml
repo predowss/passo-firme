@@ -1,0 +1,109 @@
+# Stack local do Passo Firme.
+#   docker compose up -d --build                  -> API + banco
+#   docker compose --profile ia up -d             -> + LLM local (Ollama)
+#   docker compose --profile obs up -d            -> + Prometheus + Grafana
+# Antes da primeira vez: ./scripts/gerar-env-local.sh (cria o .env com senhas aleatórias).
+
+name: passo-firme
+
+x-endurecido: &endurecido
+  security_opt:
+    - no-new-privileges:true
+  restart: unless-stopped
+
+services:
+  db:
+    <<: *endurecido
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: passofirme
+      POSTGRES_USER: passofirme
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Rode ./scripts/gerar-env-local.sh para criar o .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U passofirme -d passofirme"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [interna]
+    # Sem "ports": o banco não fica exposto fora da rede do compose.
+
+  api:
+    <<: *endurecido
+    build: ./api
+    image: passo-firme-api:local
+    environment:
+      APP_ENV: local
+      APP_VERSION: local
+      DATABASE_URL: postgresql+psycopg://passofirme:${POSTGRES_PASSWORD}@db:5432/passofirme
+      METRICS_TOKEN: ${METRICS_TOKEN:-}
+      OPS_TOKEN: ${OPS_TOKEN:-}
+      AUTOR_SALT: ${AUTOR_SALT:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    networks: [interna]
+
+  llm:
+    <<: *endurecido
+    profiles: ["ia"]
+    # Fixar a versão que o time de IA validar (ex.: ollama/ollama:0.x.y).
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    networks: [interna]
+    # Baixar o modelo uma vez: docker compose exec llm ollama pull qwen2.5:1.5b
+
+  prometheus:
+    <<: *endurecido
+    profiles: ["obs"]
+    image: prom/prometheus:v3.5.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - ./observabilidade/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observabilidade/prometheus/alertas.yml:/etc/prometheus/alertas.yml:ro
+      - ./observabilidade/alvos:/etc/prometheus/alvos:ro
+      - ./observabilidade/segredos:/etc/prometheus/segredos:ro
+      - prometheus:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+    networks: [interna]
+
+  grafana:
+    <<: *endurecido
+    profiles: ["obs"]
+    image: grafana/grafana:12.0.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - ./observabilidade/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observabilidade/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana:/var/lib/grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on: [prometheus]
+    networks: [interna]
+
+networks:
+  interna: {}
+
+volumes:
+  pgdata: {}
+  ollama: {}
+  prometheus: {}
+  grafana: {}

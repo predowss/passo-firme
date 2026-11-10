@@ -1,0 +1,4 @@
+# Exceções do Trivy. Cada linha precisa de justificativa e data de revisão.
+# Formato: ID do achado (ex.: AVD-AZU-0000 ou CVE-0000-00000), um por linha.
+# Exemplo:
+# AVD-AZU-0000  # motivo: ... | aceito por: ... | revisar em: 2026-12-01
