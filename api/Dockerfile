@@ -22,7 +22,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/opt/venv/bin:$PATH" \
     APP_VERSION=${APP_VERSION}
-RUN groupadd --system --gid 10001 app \
+# Correção de segurança: o Trivy barrou o zlib1g da imagem base (CVE-2026-85091,
+# heap overflow), já corrigido pelo Debian em 1.3.1-1+deb13u1. Atualiza só esse
+# pacote; remover quando a python:3.12-slim já vier com a versão corrigida.
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends --only-upgrade zlib1g \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 10001 app \
     && useradd --system --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app
 WORKDIR /srv
 COPY --from=build /opt/venv /opt/venv
