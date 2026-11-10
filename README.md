@@ -4,7 +4,7 @@
 
 O Passo Firme mapeia, prioriza e encaminha barreiras nas calçadas de São Paulo, para que idosos e pessoas com deficiência caminhem sem cair. Este repositório tem a API do MVP e tudo o que a coloca no ar: container, infraestrutura como código na Azure, pipeline DevSecOps e observabilidade.
 
-**MVP no ar:** https://PREENCHER.azurecontainerapps.io · [documentação da API](https://PREENCHER.azurecontainerapps.io/docs) · [saúde](https://PREENCHER.azurecontainerapps.io/health)
+**MVP no ar:** https://ca-passofirme-api.lemonfield-b3da2f2c.brazilsouth.azurecontainerapps.io · [documentação da API](https://ca-passofirme-api.lemonfield-b3da2f2c.brazilsouth.azurecontainerapps.io/docs) · [saúde](https://ca-passofirme-api.lemonfield-b3da2f2c.brazilsouth.azurecontainerapps.io/health)
 
 FIAP · Global Solution 2026.2 · CitizenTech · Engenharia de Software, 4º ano
 
@@ -29,7 +29,7 @@ FIAP · Global Solution 2026.2 · CitizenTech · Engenharia de Software, 4º ano
 | Arquitetura | App web acessível · API FastAPI + PostgreSQL · detector YOLO · assistente da lei (LLM local + RAG) · pipeline Airflow → Databricks · robô de triagem (RPA) · robô vistoriador (Maker Lab) · containers no Azure com Terraform e GitHub Actions. |
 | Fontes de dados | SP156 (dados abertos da Prefeitura) · Open-Meteo · API do IBGE · relatos do app (foto + GPS) · leituras do robô · Lei 15.442/2011, Decreto 59.671/2020, Lei 13.146/2015 e Carta de Serviços do SP156. |
 | Modelos de IA | YOLO (Ultralytics) treinado para barreiras de calçada · LLM aberto pequeno com RAG e LoRA · embeddings multilíngues · TinyML no robô. |
-| URL e repositórios | MVP: PREENCHER · Código: este repositório e os repositórios `passo-firme-*` da organização. |
+| URL e repositórios | MVP: https://ca-passofirme-api.lemonfield-b3da2f2c.brazilsouth.azurecontainerapps.io · Código: este repositório e os repositórios `passo-firme-*` da organização. |
 | Indicadores de impacto | Barreiras mapeadas · % resolvidas · tempo médio até o conserto (antes e depois, pelo histórico do SP156) · idosos e pessoas com deficiência usando o app · metros de calçada vistoriados pelo robô. |
 | ODS | 11 (metas 11.2 e 11.7) · 10 (meta 10.2) · 3 · 9 (meta 9.1) |
 
