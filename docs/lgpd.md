@@ -19,7 +19,7 @@ Princípio adotado: guardar o mínimo, pelo menor tempo, no lugar mais fechado p
 
 ## Pontos de atenção
 
-- **Transferência internacional (art. 33):** a região padrão é `eastus2`, nos Estados Unidos, porque a assinatura de estudante restringe regiões e lá o custo é menor. Num piloto real com a prefeitura, a recomendação é `brazilsouth`, trocando a variável `location`.
+- **Dados no Brasil (art. 33):** toda a infraestrutura com dados dos cidadãos (banco, API e logs) roda na região `brazilsouth`, em São Paulo. Não há transferência internacional de dados pessoais. Ficam fora do Brasil só o código no GitHub e as notificações de alerta, e nenhum dos dois carrega dado de cidadão.
 - **Pseudonimizado continua sendo pessoal:** o hash do autor reduz o risco, mas ainda é dado pessoal (art. 12 e art. 13, § 4º). Por isso a chave fica só no secret do Container App.
 - **Direitos do titular:** como o app não exige cadastro, o titular pode pedir a exclusão dos próprios relatos informando o identificador que o app gerou para ele.
 - **Base legal:** a definir com o modelo de negócio. No piloto com cidadãos, consentimento no app (art. 7º, I). Numa parceria com o poder público, execução de políticas públicas (art. 7º, III).

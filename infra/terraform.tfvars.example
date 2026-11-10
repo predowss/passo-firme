@@ -2,8 +2,12 @@
 # cp terraform.tfvars.example terraform.tfvars
 
 subscription_id    = "00000000-0000-0000-0000-000000000000"
-location           = "eastus2"
+location           = "brazilsouth"
 github_repositorio = "sua-organizacao/passo-firme"
+
+# Subject do OIDC no formato novo do GitHub (com IDs). Gere com:
+# gh api repos/DONO/REPO --jq '"repo:\(.owner.login)@\(.owner.id)/\(.name)@\(.id):environment:producao"'
+# github_oidc_subject = "repo:dono@123/passo-firme@456:environment:producao"
 
 # Quem recebe os alertas por e-mail (dado pessoal: por isso este arquivo não vai para o Git).
 emails_alerta = ["integrante@exemplo.com"]

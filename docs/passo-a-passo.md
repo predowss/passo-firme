@@ -19,8 +19,12 @@ Alinhado ao plano do grupo: Marco 1 (MVP no ar com CI/CD) em 11/11, Marco 2 (as 
 ## 10/11 (ter): Terraform
 
 1. `az login` com a conta Azure for Students.
-2. `LOCATION=eastus2 ./scripts/01-bootstrap-azure.sh`. Confira na saída as regiões liberadas; se `eastus2` não estiver na lista, rode de novo com uma região liberada.
-3. Editar `infra/terraform.tfvars`: `github_repositorio` exatamente como aparece no GitHub (maiúsculas contam) e os e-mails dos alertas.
+2. Veja as regiões liberadas com `az policy assignment list --query "[].parameters.listOfAllowedLocations.value" -o jsonc` e rode `LOCATION=brazilsouth ./scripts/01-bootstrap-azure.sh` (ou outra região da lista).
+3. Editar `infra/terraform.tfvars`: `github_repositorio` exatamente como aparece no GitHub (maiúsculas contam), os e-mails dos alertas e o subject do OIDC no formato novo:
+   ```bash
+   SUB=$(gh api repos/DONO/REPO --jq '"repo:\(.owner.login)@\(.owner.id)/\(.name)@\(.id):environment:producao"')
+   echo "github_oidc_subject = \"$SUB\"" >> infra/terraform.tfvars
+   ```
 4. Aplicar:
    ```bash
    cd infra
@@ -30,6 +34,7 @@ Alinhado ao plano do grupo: Marco 1 (MVP no ar com CI/CD) em 11/11, Marco 2 (as 
    terraform output
    ```
 5. Versionar o `infra/.terraform.lock.hcl` gerado no init.
+6. Abrir o e-mail "Verify your email address" da Azure e confirmar o código **em até 30 minutos**. Sem isso, os alertas disparam mas ninguém recebe.
 
 ## 11/11 (qua): pipeline e Marco 1
 
@@ -90,7 +95,7 @@ az group delete --name rg-passofirme-tfstate
 | --- | --- | --- |
 | `RequestDisallowedByAzure` | Região fora da lista da Azure for Students | Trocar `location` por uma região permitida (o bootstrap mostra a lista) |
 | Postgres falha com restrição de região ou oferta | Postgres indisponível para a assinatura naquela região | Trocar `location` e rodar o apply de novo |
-| `AADSTS700213` ou "no matching federated identity" no deploy | Subject do OIDC diferente | `github_repositorio` com as maiúsculas exatas e o job rodando no environment `producao` |
+| `AADSTS700213` ou "no matching federated identity" no deploy | O GitHub usa subject com IDs imutáveis | Preencher `github_oidc_subject` com o valor que aparece no erro (ou gerado pelo `gh api`) e rodar `terraform apply` |
 | `AuthorizationFailed` no deploy | Papel ainda propagando | Esperar 5 minutos e reexecutar o job |
 | `terraform init` sem permissão no state | Falta o papel no Storage Account | Dar "Storage Blob Data Contributor" a quem roda o Terraform |
 | Job IaC falha no `fmt` | Arquivo .tf fora do padrão | `terraform fmt -recursive infra` e commit |
@@ -99,3 +104,7 @@ az group delete --name rg-passofirme-tfstate
 | Semgrep acusa falso positivo | Regra genérica | `# nosemgrep: <id-da-regra>` na linha, com um comentário explicando o motivo |
 | Container App não sobe a imagem do ACR (401) | AcrPull ainda propagando | Esperar alguns minutos e reexecutar o deploy |
 | Primeira resposta demora uns 10 s | Escala a zero | Normal no desenvolvimento; `api_min_replicas = 1` na correção |
+| Terraform quer remover `Microsoft.Storage` da sub-rede do banco | A Azure adiciona esse endpoint ao criar o Postgres privado | Já declarado em `infra/rede.tf`; se voltar a aparecer, não aplique e declare no código |
+| Alerta "Fired" no portal, mas sem e-mail | E-mail do grupo de ações não verificado | Verificar pelo e-mail da Azure (código vale 30 min); se venceu: `terraform -chdir=infra apply -replace=azurerm_monitor_action_group.equipe` |
+| Dezenas de execuções do Dependabot logo no começo | Um PR por dependência | Configuração agrupada em `.github/dependabot.yml`; fechar os PRs antigos com `gh pr close` |
+| Trivy barra CVE em pacote da imagem base com correção disponível | Imagem oficial ainda não reconstruída | Atualizar só o pacote no Dockerfile (`apt-get install --only-upgrade <pacote>`) com comentário do motivo |

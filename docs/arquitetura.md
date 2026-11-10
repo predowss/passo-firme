@@ -1,6 +1,6 @@
 # Arquitetura de produção
 
-O MVP roda inteiro em serviços gerenciados da Azure, criados pelo Terraform da pasta [infra/](../infra). Não existe máquina virtual: não há SSH, RDP nem porta de administração para abrir.
+O MVP roda inteiro em serviços gerenciados da Azure, na região `brazilsouth` (São Paulo), criados pelo Terraform da pasta [infra/](../infra). Não existe máquina virtual: não há SSH, RDP nem porta de administração para abrir.
 
 O diagrama está no [README](../README.md#arquitetura-de-produção).
 
@@ -33,10 +33,11 @@ O diagrama está no [README](../README.md#arquitetura-de-produção).
 
 | Decisão | Por quê | Evolução |
 | --- | --- | --- |
+| Região `brazilsouth` | Dados dos cidadãos no Brasil (LGPD, art. 33) e menor latência para São Paulo; está entre as regiões liberadas para a conta de estudante | Zona redundante para alta disponibilidade |
 | Azure Container Apps em vez de VM ou AKS | HTTPS e certificado gerenciados, escala a zero, cota gratuita mensal e nenhum servidor para manter ou abrir para SSH | AKS se o número de serviços crescer muito |
 | PostgreSQL gerenciado e privado | Backup automático de 7 dias e patches por conta da Azure; sem IP público, o banco não pode ser atacado direto da internet | Alta disponibilidade entre zonas |
 | ACR com identidade gerenciada | Imagem privada e nenhuma senha de registro em lugar nenhum | Assinatura de imagem e varredura contínua no registro |
-| OIDC com identidade gerenciada | O GitHub não guarda segredo de longo prazo. Usar identidade gerenciada em vez de app registration funciona mesmo quando a conta de estudante não pode criar aplicativos no Entra ID | Papel customizado com o mínimo de ações |
+| OIDC com identidade gerenciada | O GitHub não guarda segredo de longo prazo. Usar identidade gerenciada em vez de app registration funciona mesmo quando a conta de estudante não pode criar aplicativos no Entra ID. A confiança usa o subject com os IDs imutáveis do dono e do repositório, então um repositório recriado com o mesmo nome não herda o acesso | Papel customizado com o mínimo de ações |
 | Segredos do Container Apps gerados pelo Terraform | Senha do banco e tokens nascem aleatórios (`random_password`), ninguém os digita, e o código só os vê como variáveis de ambiente | Key Vault referenciado pela identidade da API |
 | State remoto sem chave compartilhada | O state contém segredos: fica num Storage Account com acesso só pelo Entra ID, versionamento e retenção de exclusão | Bloqueio por rede privada |
 | Prometheus e Grafana locais + Azure Monitor | O painel fica versionado como código e o enunciado permite rodá-lo local apontando para o MVP publicado. Os alertas do Azure Monitor avisam por e-mail mesmo com as máquinas da equipe desligadas | Grafana gerenciado ou Application Insights com OpenTelemetry |

@@ -10,13 +10,12 @@ FIAP · Global Solution 2026.2 · CitizenTech · Engenharia de Software, 4º ano
 
 ## Integrantes
 
-| Nome completo | RM | Trilha |
-| --- | --- | --- |
-| PREENCHER | RM00000 | Produto (app + API) |
-| PREENCHER | RM00000 | DevOps e Cloud |
-| PREENCHER | RM00000 | Visão Computacional + Maker Lab |
-| PREENCHER | RM00000 | IA Generativa |
-| PREENCHER | RM00000 | Big Data + RPA |
+| Nome completo | RM |
+| --- | --- |
+| Orlando Akio Morii Cardoso | RM98067 |
+| Pedro Henrique Alves Guariente | RM550301 |
+| David de Medeiros Pacheco Junior | RM551462 |
+| Kaique Maia Reis Silva | RM552112 |
 
 ## Ficha Técnica do MVP
 
@@ -29,7 +28,7 @@ FIAP · Global Solution 2026.2 · CitizenTech · Engenharia de Software, 4º ano
 | Arquitetura | App web acessível · API FastAPI + PostgreSQL · detector YOLO · assistente da lei (LLM local + RAG) · pipeline Airflow → Databricks · robô de triagem (RPA) · robô vistoriador (Maker Lab) · containers no Azure com Terraform e GitHub Actions. |
 | Fontes de dados | SP156 (dados abertos da Prefeitura) · Open-Meteo · API do IBGE · relatos do app (foto + GPS) · leituras do robô · Lei 15.442/2011, Decreto 59.671/2020, Lei 13.146/2015 e Carta de Serviços do SP156. |
 | Modelos de IA | YOLO (Ultralytics) treinado para barreiras de calçada · LLM aberto pequeno com RAG e LoRA · embeddings multilíngues · TinyML no robô. |
-| URL e repositórios | MVP: https://ca-passofirme-api.lemonfield-b3da2f2c.brazilsouth.azurecontainerapps.io · Código: este repositório e os repositórios `passo-firme-*` da organização. |
+| URL e repositórios | MVP: https://ca-passofirme-api.lemonfield-b3da2f2c.brazilsouth.azurecontainerapps.io · Código: https://github.com/predowss/passo-firme |
 | Indicadores de impacto | Barreiras mapeadas · % resolvidas · tempo médio até o conserto (antes e depois, pelo histórico do SP156) · idosos e pessoas com deficiência usando o app · metros de calçada vistoriados pelo robô. |
 | ODS | 11 (metas 11.2 e 11.7) · 10 (meta 10.2) · 3 · 9 (meta 9.1) |
 
@@ -81,10 +80,10 @@ A API fica em http://localhost:8080/docs. Testes: `cd api && pip install -r requ
 
 ## Publicar na Azure
 
-Requisitos: Azure CLI, Terraform 1.6 ou mais novo, GitHub CLI e uma assinatura Azure for Students.
+Requisitos: Azure CLI, Terraform 1.6 ou mais novo, GitHub CLI e uma assinatura Azure for Students. O MVP roda na região `brazilsouth` (São Paulo).
 
 ```bash
-LOCATION=eastus2 ./scripts/01-bootstrap-azure.sh   # state remoto + backend.hcl + terraform.tfvars
+LOCATION=brazilsouth ./scripts/01-bootstrap-azure.sh   # state remoto + backend.hcl + terraform.tfvars
 # edite infra/terraform.tfvars: github_repositorio e emails_alerta
 cd infra
 terraform init -backend-config=backend.hcl
@@ -124,6 +123,7 @@ O login na Azure usa OIDC: o GitHub guarda só identificadores, nenhuma senha. O
 - [Onde ficam os dados pessoais (LGPD)](docs/lgpd.md)
 - [Estimativa de custo](docs/custo.md)
 - [Roteiro de evidências para o PDF](docs/evidencias.md)
+- [Lições aprendidas no deploy](docs/licoes-aprendidas.md)
 
 ## Estrutura
 

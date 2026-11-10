@@ -34,20 +34,21 @@ O PDF é único, com links clicáveis, enviado no portal da disciplina até 19/1
 | Build, Gitleaks, Semgrep e Trivy a cada push | Grafo de uma execução verde com os 6 jobs | Aba Actions, execução da `main` |
 | Segredos em GitHub Secrets | Lista de Secrets do environment `producao` (os valores aparecem ocultos) | Settings > Environments > producao |
 | Deploy automático | Job de deploy com a URL e o teste de fumaça mostrando a versão (SHA) | Log do passo "Teste de fumaça" e `/health` aberto no navegador |
-| Execução barrada (segredo) | Job do Gitleaks vermelho, com o achado mascarado | `./scripts/demo-pipeline-barrado.sh segredo` |
-| Execução corrigida | A mesma branch verde depois da correção | `./scripts/demo-pipeline-barrado.sh corrigir` |
-| Execução barrada (vulnerabilidade), opcional | Trivy listando CVE alta do urllib3 1.26.4 | `./scripts/demo-pipeline-barrado.sh vulnerabilidade` e depois `corrigir` |
+| Execução barrada (caso real) | Execução #24 com "Build + Trivy" vermelho e a tabela do Trivy: `zlib1g`, CVE-2026-85091 (HIGH) | Já capturada ([lições aprendidas](licoes-aprendidas.md)) |
+| Execução corrigida (caso real) | Trecho do Dockerfile com a correção e a execução #25 com a imagem aprovada | Já capturada |
+| Demonstração extra (opcional) | Gitleaks barrando uma chave falsa e a correção | `./scripts/demo-pipeline-barrado.sh segredo` e depois `corrigir` |
 
-Na correção do segredo, explique no PDF por que apagar o arquivo num commit novo não basta: o segredo continua no histórico. Por isso o script reescreve o histórico, e num caso real a chave seria revogada na hora.
+O caso real do Trivy vale mais do que a demonstração: a vulnerabilidade estava na imagem oficial do Python e foi barrada antes de chegar à produção. Se fizer também a demonstração do segredo, explique no PDF por que apagar o arquivo num commit novo não basta: o segredo continua no histórico. Por isso o script reescreve o histórico, e num caso real a chave seria revogada na hora.
 
 ## C. Observabilidade (3,0)
 
 | Critério | Evidência | Como gerar |
 | --- | --- | --- |
 | Painel com as 4 métricas de ouro | Painel "Passo Firme — 4 métricas de ouro" com dados do ambiente `api-azure` | `./scripts/configurar-prometheus.sh`, depois `for i in $(seq 30); do ./scripts/smoke-test.sh >/dev/null; done` |
-| Alerta disparado | Alerta "Fired" no Azure Monitor e o e-mail recebido | `./scripts/disparar-alerta.sh` e Portal > Monitor > Alertas |
+| Alerta disparado | Alerta "Fired" no Azure Monitor, o detalhe com o gráfico (10 respostas 5xx contra o limite de 5) e o e-mail "Fired: Sev1" recebido | `./scripts/disparar-alerta.sh` e Portal > Monitor > Alerts |
+| Notificação configurada | Grupo de ações com o e-mail "Verified" | Portal > Monitor > Alerts > Action groups |
 | Alerta disparado (Prometheus) | `APIErros5xx` em FIRING e o painel "Alertas disparando" | http://localhost:9090/alerts e o Grafana |
-| Bônus: limite de requisições | Respostas 429 no gráfico de erros 4xx | O laço do smoke-test acima passa de 120 requisições por minuto |
+| Recuperação | Erros 5xx de volta a 0% e `APIErros5xx` inativo; e-mail "Resolved" se chegar | Gerar tráfego normal com o smoke-test por 2 minutos |
 
 ## D. Documentação (2,0)
 
@@ -55,12 +56,14 @@ Na correção do segredo, explique no PDF por que apagar o arquivo num commit no
 - Responsabilidade compartilhada: [responsabilidade-compartilhada.md](responsabilidade-compartilhada.md).
 - Dados pessoais (LGPD): [lgpd.md](lgpd.md).
 - Estimativa de custo: [custo.md](custo.md).
+- Lições aprendidas: [licoes-aprendidas.md](licoes-aprendidas.md).
 - README reproduzível: peça para alguém de fora da trilha seguir o README do zero e anote o que travou.
 
 ## Checklist antes de enviar
 
-- [ ] Nome completo e RM de todos no PDF e no README.
-- [ ] Ficha Técnica do MVP no README.
+- [x] Nome completo e RM de todos no README.
+- [ ] Nome completo e RM de todos no PDF.
+- [x] Ficha Técnica do MVP no README.
 - [ ] Repositório público e URL do MVP abrindo numa janela anônima.
 - [ ] `api_min_replicas = 1` aplicado para a semana de correção.
 - [ ] Todos os links do PDF testados.
