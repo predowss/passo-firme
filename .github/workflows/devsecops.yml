@@ -240,7 +240,7 @@ jobs:
         run: |
           set -euo pipefail
           for tentativa in $(seq 1 30); do
-            versao=$(curl -fsS --max-time 10 "${URL}/health" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("versao",""))' || true)
+            versao=$(curl -fsS --max-time 10 "${URL}/health" 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("versao",""))' 2>/dev/null || true)
             if [ "$versao" = "$GITHUB_SHA" ]; then
               echo "No ar: ${URL} (versão ${versao})"
               exit 0
