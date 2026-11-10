@@ -1,24 +1,38 @@
-# Atualizações semanais de dependências: cada PR passa pelo pipeline inteiro
-# (Gitleaks, Semgrep, Trivy e testes) antes de poder entrar na main.
+# Atualizações de dependências agrupadas: no máximo 1 PR por ecossistema por mês.
+# Cada PR passa pelo pipeline inteiro (Gitleaks, Semgrep, Trivy e testes) e só
+# entra na main se ficar verde.
 version: 2
 updates:
   - package-ecosystem: pip
     directory: /api
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      python:
+        patterns: ["*"]
 
   - package-ecosystem: docker
     directory: /api
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 1
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      actions:
+        patterns: ["*"]
 
   - package-ecosystem: terraform
     directory: /infra
     schedule:
-      interval: weekly
+      interval: monthly
+    open-pull-requests-limit: 1
+    ignore:
+      # azurerm 5.x muda a API dos recursos: migrar com calma, depois da GS.
+      - dependency-name: "hashicorp/azurerm"
+        update-types: ["version-update:semver-major"]

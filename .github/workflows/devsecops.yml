@@ -19,6 +19,7 @@ name: DevSecOps
 
 on:
   push:
+    branches-ignore: ["dependabot/**"] # PRs do Dependabot já rodam pelo pull_request
   pull_request:
     branches: [main]
   workflow_dispatch:
