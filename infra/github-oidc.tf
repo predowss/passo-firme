@@ -4,6 +4,14 @@
 # Usa identidade gerenciada (não precisa de permissão para criar app registration,
 # o que costuma ser bloqueado em contas de estudante).
 
+locals {
+  # O GitHub passou a incluir no token os IDs imutáveis do dono e do repositório
+  # (repo:dono@ID/repo@ID:environment:nome). Isso impede que um repositório
+  # recriado com o mesmo nome herde o acesso. Sem a variável, usa o formato antigo.
+  subject_formato_antigo = "repo:${var.github_repositorio}:environment:${var.github_ambiente}"
+  github_oidc_subject    = var.github_oidc_subject != "" ? var.github_oidc_subject : local.subject_formato_antigo
+}
+
 resource "azurerm_user_assigned_identity" "github" {
   name                = "id-${local.nome}-github-deploy"
   location            = azurerm_resource_group.main.location
@@ -17,7 +25,7 @@ resource "azurerm_federated_identity_credential" "github" {
   parent_id           = azurerm_user_assigned_identity.github.id
   audience            = ["api://AzureADTokenExchange"]
   issuer              = "https://token.actions.githubusercontent.com"
-  subject             = "repo:${var.github_repositorio}:environment:${var.github_ambiente}"
+  subject             = local.github_oidc_subject
 }
 
 # Escopo restrito ao grupo de recursos do projeto, nunca à assinatura inteira.

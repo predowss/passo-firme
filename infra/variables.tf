@@ -95,3 +95,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "github_oidc_subject" {
+  description = "Subject exato do token OIDC do GitHub, com os IDs imutáveis: repo:dono@ID/repositorio@ID:environment:producao. Vazio = formato antigo (repo:dono/repositorio:environment:producao)."
+  type        = string
+  default     = ""
+}
