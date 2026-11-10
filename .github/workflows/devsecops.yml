@@ -196,7 +196,7 @@ jobs:
       CONTAINER_APP: ${{ vars.CONTAINER_APP }}
     steps:
       - name: Receber a imagem que passou no Trivy
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: imagem-api
 
