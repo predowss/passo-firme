@@ -4,11 +4,11 @@
 #   - mostra as regiões liberadas (Azure for Students restringe regiões)
 #   - cria o Storage Account do state remoto (sem chave de acesso, só Entra ID)
 #   - gera infra/backend.hcl e infra/terraform.tfvars (ambos fora do Git)
-# Uso: LOCATION=eastus2 ./scripts/01-bootstrap-azure.sh
+# Uso: LOCATION=brazilsouth ./scripts/01-bootstrap-azure.sh   (ou outra região liberada na sua assinatura)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-LOCATION="${LOCATION:-eastus2}"
+LOCATION="${LOCATION:-brazilsouth}"
 RG_STATE="${RG_STATE:-rg-passofirme-tfstate}"
 
 command -v az >/dev/null || { echo "Instale a Azure CLI: https://aka.ms/azure-cli" >&2; exit 1; }
@@ -75,7 +75,7 @@ fi
 
 if [[ ! -f infra/terraform.tfvars ]]; then
   sed -e "s/00000000-0000-0000-0000-000000000000/${SUB_ID}/" \
-      -e "s/\"eastus2\"/\"${LOCATION}\"/" \
+      -e "s/^location\( *\)= \".*\"/location\1= \"${LOCATION}\"/" \
       infra/terraform.tfvars.example > infra/terraform.tfvars
   echo "==> infra/terraform.tfvars criado: ajuste github_repositorio e emails_alerta."
 fi

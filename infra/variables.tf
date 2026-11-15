@@ -6,7 +6,7 @@ variable "subscription_id" {
 variable "location" {
   description = "Região da Azure. Na Azure for Students, use uma das regiões liberadas pela política \"Allowed resource deployment regions\" da sua assinatura."
   type        = string
-  default     = "eastus2"
+  default     = "brazilsouth"
 }
 
 variable "projeto" {

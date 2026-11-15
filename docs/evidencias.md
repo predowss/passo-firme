@@ -62,9 +62,9 @@ O caso real do Trivy vale mais do que a demonstração: a vulnerabilidade estava
 ## Checklist antes de enviar
 
 - [x] Nome completo e RM de todos no README.
-- [ ] Nome completo e RM de todos no PDF.
+- [x] Nome completo e RM de todos no PDF.
 - [x] Ficha Técnica do MVP no README.
-- [ ] Repositório público e URL do MVP abrindo numa janela anônima.
-- [ ] `api_min_replicas = 1` aplicado para a semana de correção.
-- [ ] Todos os links do PDF testados.
-- [ ] Nenhum print com token, senha ou e-mail de integrante à mostra.
+- [x] Repositório público e URL do MVP abrindo numa janela anônima.
+- [x] `api_min_replicas = 1` aplicado para a semana de correção.
+- [x] Todos os links do PDF testados.
+- [x] Nenhum print com token, senha ou e-mail de integrante à mostra.
