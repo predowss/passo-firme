@@ -47,7 +47,7 @@ flowchart LR
         api[API FastAPI<br/>usuário não root · :8080]
         ia[YOLO e LLM<br/>serviços internos das outras trilhas]
       end
-      subgraph snetdb["snet-db · NSG libera só 5432 vindo dos apps"]
+      subgraph snetdb["snet-db · NSG: 5432 só da rede interna"]
         pg[(PostgreSQL Flexible<br/>sem IP público · TLS)]
       end
     end

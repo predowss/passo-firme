@@ -22,8 +22,8 @@ O diagrama está no [README](../README.md#arquitetura-de-produção).
 
 | Origem | Destino | Porta | Controle |
 | --- | --- | --- | --- |
-| Internet | API | 443 (HTTPS) | Ingress gerenciado; HTTP puro recusado (`allow_insecure_connections = false`) |
-| API | PostgreSQL | 5432 | Rede privada; NSG libera só a `snet-apps`; TLS obrigatório |
+| Internet | API | 443 (HTTPS) | Ingress gerenciado; HTTP redirecionado para HTTPS (`allow_insecure_connections = false`) |
+| API | PostgreSQL | 5432 | Rede privada; NSG libera a 5432 só para a `snet-apps` (e a própria `snet-db`) e nega o resto; TLS obrigatório |
 | Internet | PostgreSQL | nenhuma | Servidor sem endpoint público (`public_network_access_enabled = false`) |
 | Container App | ACR | 443 | Identidade gerenciada com papel AcrPull |
 | GitHub Actions | Azure | 443 | Token OIDC válido só para o environment `producao` deste repositório |
