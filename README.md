@@ -76,7 +76,16 @@ docker compose --profile obs up -d        # + Prometheus (9090) e Grafana (3000)
 docker compose --profile ia up -d         # + LLM local (Ollama), opcional
 ```
 
-A API fica em http://localhost:8080/docs. Testes: `cd api && pip install -r requirements-dev.txt && pytest`.
+A API fica em http://localhost:8080/docs.
+
+Testes, só com Docker (o mesmo Python 3.12 do pipeline):
+
+```bash
+docker run --rm -e PYTHONDONTWRITEBYTECODE=1 -v "$PWD/api":/app -w /app python:3.12-slim \
+  sh -c "pip install -q --root-user-action=ignore -r requirements-dev.txt && pytest -p no:cacheprovider"
+```
+
+Com Python 3.12 instalado, também dá num ambiente virtual: `cd api && python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements-dev.txt && pytest`.
 
 ## Publicar na Azure
 

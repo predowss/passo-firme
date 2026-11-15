@@ -36,9 +36,9 @@ O PDF é único, com links clicáveis, enviado no portal da disciplina até 19/1
 | Deploy automático | Job de deploy com a URL e o teste de fumaça mostrando a versão (SHA) | Log do passo "Teste de fumaça" e `/health` aberto no navegador |
 | Execução barrada (caso real) | Execução #24 com "Build + Trivy" vermelho e a tabela do Trivy: `zlib1g`, CVE-2026-85091 (HIGH) | Já capturada ([lições aprendidas](licoes-aprendidas.md)) |
 | Execução corrigida (caso real) | Trecho do Dockerfile com a correção e a execução #25 com a imagem aprovada | Já capturada |
-| Demonstração extra (opcional) | Gitleaks barrando uma chave falsa e a correção | `./scripts/demo-pipeline-barrado.sh segredo` e depois `corrigir` |
+| Segunda execução barrada (demonstração) | Execução #31 com "Segredos (Gitleaks)" vermelho e o achado `generic-api-key`; execução #32 corrigida | Já capturada, com `./scripts/demo-pipeline-barrado.sh segredo` e depois `corrigir` |
 
-O caso real do Trivy vale mais do que a demonstração: a vulnerabilidade estava na imagem oficial do Python e foi barrada antes de chegar à produção. Se fizer também a demonstração do segredo, explique no PDF por que apagar o arquivo num commit novo não basta: o segredo continua no histórico. Por isso o script reescreve o histórico, e num caso real a chave seria revogada na hora.
+O caso real do Trivy vale mais do que a demonstração: a vulnerabilidade estava na imagem oficial do Python e foi barrada antes de chegar à produção. Na demonstração do segredo, apagar o arquivo num commit novo não bastaria: o segredo continuaria no histórico, que o Gitleaks varre inteiro. Por isso o script reescreve o histórico, e num caso real a chave seria revogada na hora.
 
 ## C. Observabilidade (3,0)
 

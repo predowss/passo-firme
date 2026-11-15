@@ -1,11 +1,25 @@
 # Estimativa de custo
 
-Região: `brazilsouth` (São Paulo). Valores em dólar, a partir dos preços de lista consultados em novembro de 2026. O custo real é acompanhado no Cost Management do grupo `rg-passofirme`, e o print dele entra no PDF.
+Região: `brazilsouth` (São Paulo). A estimativa usa preços de lista de novembro de 2026, em dólar, sem descontar as cotas gratuitas. O custo real, medido no Cost Management do grupo `rg-passofirme`, ficou muito abaixo dela.
+
+## Custo real (Cost Management)
+
+De 9 a 14 de novembro, com tudo no ar, o grupo custou **R$ 4,54** (moeda da assinatura):
+
+| Recurso | Custo real | Por quê |
+| --- | --- | --- |
+| Container Registry Basic | R$ 4,14 | Tarifa diária fixa: é quase todo o custo |
+| Zona de DNS privado | R$ 0,40 | Tarifa mensal por zona |
+| PostgreSQL Flexible B1ms | R$ 0 | Dentro da cota gratuita da assinatura de estudante: 750 horas por mês da B1MS, 32 GB de armazenamento e 32 GB de backup, por 12 meses |
+| Container Apps (API) | não aparece | Com escala a zero, o uso ficou dentro da cota gratuita mensal, e uso gratuito não entra na fatura |
+| Log Analytics, alertas e grupo de ações | R$ 0 | — |
+
+A partir de 14/11 a API ficou com 1 réplica sempre ligada para a correção. Ociosa, ela é cobrada na tarifa reduzida e passa da cota gratuita do mês: são uns US$ 3 a mais até o fim da correção. Somado ao Container Registry, a janela inteira da GS deve ficar perto de US$ 10. A tabela abaixo continua valendo como teto: é o custo de quem não tem os benefícios da assinatura.
 
 ## Premissas
 
 - Assinatura Azure for Students, com US$ 100 de crédito.
-- API com 0,5 vCPU e 1 GiB. Durante o desenvolvimento escala a zero (`api_min_replicas = 0`); na semana de correção fica com 1 réplica sempre ligada.
+- API com 0,5 vCPU e 1 GiB. Durante o desenvolvimento escalou a zero (`api_min_replicas = 0`); a partir de 14/11 ficou com 1 réplica sempre ligada (`api_min_replicas = 1`), para a correção.
 - Tráfego de MVP, bem abaixo de 2 milhões de requisições por mês.
 - Janela da GS: de 09/11 a cerca de 26/11 (fim da correção), uns 18 dias.
 
@@ -65,4 +79,5 @@ curl -s -G "https://prices.azure.com/api/retail/prices" \
 - [Preço do PostgreSQL Flexible B1ms por região (Bytebase)](https://www.bytebase.com/dbcost/azure-flexible/instance/B1ms/)
 - [Camadas do Azure Container Registry](https://learn.microsoft.com/azure/container-registry/container-registry-skus)
 - [API de preços de varejo da Azure](https://learn.microsoft.com/rest/api/cost-management/retail-prices/azure-retail-prices)
-- [Azure for Students](https://azure.microsoft.com/free/students/)
+- [Azure for Students e serviços gratuitos](https://azure.microsoft.com/free/students/)
+- [PostgreSQL Flexible na conta gratuita (750 horas da B1MS)](https://learn.microsoft.com/azure/postgresql/flexible-server/how-to-deploy-on-azure-free-account)

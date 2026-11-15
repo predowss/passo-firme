@@ -55,3 +55,12 @@ Problemas reais que apareceram ao colocar o MVP no ar, e como cada um foi resolv
 | Causa | A Azure for Students limita cada assinatura a cerca de cinco regiões, que variam por pessoa. A nossa permitia `canadacentral`, `chilecentral`, `centralus`, `brazilsouth` e `northcentralus`. |
 | Correção | O script de bootstrap mostra a lista antes de criar qualquer recurso, e a região virou variável. Escolhemos `brazilsouth`. |
 | Lição | A restrição virou ganho: os dados dos cidadãos ficam no Brasil, sem transferência internacional (LGPD, art. 33), e a latência para São Paulo é a menor possível. |
+
+## 7. A estimativa de custo ficou muito acima do real
+
+| | |
+| --- | --- |
+| Sintoma | A estimativa de preço de lista previa cerca de US$ 35 a 50 por mês; o Cost Management mostrou R$ 4,54 em seis dias. |
+| Causa | A estimativa não descontou as cotas gratuitas: o PostgreSQL B1MS entra nas 750 horas mensais da assinatura de estudante, e o Container App com escala a zero ficou dentro da cota mensal do Container Apps. |
+| Correção | Custo real documentado em [custo.md](custo.md), com a estimativa de lista mantida como teto. |
+| Lição | Estimativa de nuvem se valida medindo: olhar o Cost Management nos primeiros dias e conferir os benefícios da assinatura antes de escolher os recursos. |
